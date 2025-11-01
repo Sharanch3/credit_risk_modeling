@@ -1,0 +1,90 @@
+import streamlit as st
+from prediction_helper import predict
+
+
+st.set_page_config(
+    page_title="Credit Risk Modeling",
+    page_icon="💳",
+    layout="centered"
+)
+
+st.title("💳 Lauki Finance: Credit Risk Modeling")
+st.divider()
+
+row1 = st.columns(3)
+row2 = st.columns(3)
+row3 = st.columns(3)
+row4 = st.columns(3)
+
+
+
+with row1[0]:
+    age = st.number_input(label="Age", min_value=18, max_value= 80, step=1)
+
+with row1[1]:
+    income = st.number_input(label="Income", min_value=0, max_value=1200000, step= 1)
+
+with row1[2]:
+    loan_amount = st.number_input(label="Loan Amount", min_value= 0, max_value=10000000, step=1)
+
+
+
+
+
+# Calculate Loan to Income Ratio and display it
+loan_to_income_ratio = loan_amount / income if income > 0 else 0
+with row2[0]:
+    st.text("Loan to Income Ratio:")
+    st.text(f"{loan_to_income_ratio:.2f}")  # Display as a text field
+
+with row2[1]:
+    loan_tenure_months = st.number_input(label="Loan Tenure (months)", min_value=1, step=1)
+
+with row2[2]:
+    avg_dpd_per_delinquency = st.number_input(label="Avg DPD", min_value=0, step=1)
+
+
+
+
+with row3[0]:
+    delinquency_ratio = st.number_input(label="Delinquency Ratio", min_value=0, max_value=100, step=1)
+
+with row3[1]:    
+    credit_utilization_ratio = st.number_input(label="Credit Utilization Ratio", min_value=0, max_value=100, step=1)
+    
+    
+with row3[2]:
+     num_open_accounts = st.number_input(label="Open Loan Accounts", min_value=0, max_value=4, step=1)
+
+
+
+
+with row4[0]:
+    residence_type = st.selectbox(label="Residence Type", options=["Owned","Rented", "Mortgage"])
+
+with row4[1]:
+    loan_purpose = st.selectbox(label="Loan Purpose", options=["Education", "Home", "Auto", "Personal"])
+
+with row4[2]:
+    loan_type = st.selectbox(label="Loan Type", options=["Unsecured", "Secured"])
+
+
+
+
+st.divider()
+if st.button(label="Calculate Risk"):
+    probability, credit_score, rating = predict(
+        age, income, loan_amount, loan_tenure_months, avg_dpd_per_delinquency,delinquency_ratio, credit_utilization_ratio, num_open_accounts,residence_type, loan_purpose, loan_type
+
+    )
+
+    st.write(f"Default Probability: {probability:.2f}%")
+    st.write(f"Credit Score: {credit_score}")
+    st.write(f"Rating: {rating}")
+
+
+
+
+
+
+
